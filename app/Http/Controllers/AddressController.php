@@ -67,7 +67,7 @@ class AddressController extends Controller
                 "status" => true,
                 "message" => "Data berhasil disimpan",
                 "data" => $insert
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -142,7 +142,7 @@ class AddressController extends Controller
                 "status" => true,
                 "message" => "Data berhasil dirubah",
                 "data" => $address_data
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -179,7 +179,7 @@ class AddressController extends Controller
                     "status" => true,
                     "message" => "Data berhasil di delete",
                     "data" => $id
-                ], 201);
+                ], 200);
             }
         } catch (\Exception $e) {
             DB::rollBack();

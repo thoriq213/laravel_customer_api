@@ -52,7 +52,7 @@ class StoreController extends Controller
             'gender' => 'required',
             'phone_number' => 'required',
             'image' => 'required',
-            'email' => 'required'
+            'email' => 'required|email'
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +90,7 @@ class StoreController extends Controller
                 "status" => true,
                 "message" => "Data berhasil disimpan",
                 "data" => $insert
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -124,7 +124,7 @@ class StoreController extends Controller
                 "status" => true,
                 "message" => null,
                 "data" => $get_data
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 "status" => false,
@@ -191,7 +191,7 @@ class StoreController extends Controller
                 "status" => true,
                 "message" => "Data berhasil dirubah",
                 "data" => $customer
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -228,7 +228,7 @@ class StoreController extends Controller
                     "status" => true,
                     "message" => "Data berhasil di delete",
                     "data" => $id
-                ], 201);
+                ], 200);
             }
         } catch (\Exception $e) {
             DB::rollBack();
