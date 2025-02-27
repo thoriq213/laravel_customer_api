@@ -92,6 +92,66 @@ class AddressController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $validator = Validator::make($request->all(), [
+            'address' => 'required',
+            'district' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'postal_code' => 'required|numeric|min:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $address_data = Address_store::findorFail($id);
+        if (!$address_data) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data tidak ditemukan",
+                "data" => $id
+            ], 400);
+        }
+
+        // $customer_id = isset($request->customer_id) ? $request->customer_id : null;
+        $address = $request->address;
+        $district = $request->district;
+        $city = $request->city;
+        $province = $request->province;
+        $postal_code = $request->postal_code;
+
+        DB::beginTransaction();
+
+        try {
+
+            DB::commit();
+
+            $address_data->update([
+                'address' => $address,
+                'district' => $district,
+                'city' => $city,
+                'province' => $province,
+                'postal_code' => $postal_code
+            ]);
+
+            return response()->json([
+                "status" => true,
+                "message" => "Data berhasil dirubah",
+                "data" => $address_data
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                "status" => false,
+                "message" => "Terjadi kesalahan: " . $e->getMessage()
+            ], 500);
+        }
+
     }
 
     /**

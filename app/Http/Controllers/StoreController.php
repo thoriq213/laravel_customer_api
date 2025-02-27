@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address_store;
 use App\Models\Customer_store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class StoreController extends Controller
         try {
             $get_all = Customer_store::orderBy('name', 'asc')->get();
 
-            if(count($get_all) > 0){
+            if (count($get_all) > 0) {
                 return response()->json([
                     "status" => true,
                     "message" => null,
@@ -31,10 +32,7 @@ class StoreController extends Controller
                     "data" => null
                 ], 404);
             }
-
         } catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -61,7 +59,7 @@ class StoreController extends Controller
             return response()->json([
                 'status' => false,
                 'data' => null,
-                'msg' => $validator->errors()
+                'message' => $validator->errors()
             ], 400);
         }
 
@@ -109,6 +107,30 @@ class StoreController extends Controller
     public function show(string $id)
     {
         //
+        try {
+            $get_data = Customer_store::find($id);
+            if (!$get_data) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Data tidak ditemukan",
+                    "data" => $id
+                ], 400);
+            }
+            $get_address = Address_store::where('customer_id', $id)->get();
+
+            $get_data['address'] = $get_address;
+            
+            return response()->json([
+                "status" => true,
+                "message" => null,
+                "data" => $get_data
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                "status" => false,
+                "message" => "Terjadi kesalahan: " . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -117,6 +139,68 @@ class StoreController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'name' => 'required',
+            'gender' => 'required',
+            'phone_number' => 'required',
+            'image' => 'required',
+            'email' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $customer = Customer_store::findorFail($id);
+        if (!$customer) {
+            return response()->json([
+                "status" => false,
+                "message" => "Data tidak ditemukan",
+                "data" => $id
+            ], 400);
+        }
+
+        $title = $request->title;
+        $name = $request->name;
+        $gender = $request->gender;
+        $phone_number = $request->phone_number;
+        $image = $request->image;
+        $email = $request->email;
+
+        DB::beginTransaction();
+        
+        try {
+
+            DB::commit();
+
+            $customer->update([
+                'title' => $title,
+                'name' => $name,
+                'gender' => $gender,
+                'phone_number' => $phone_number,
+                'image' => $image,
+                'email' => $email
+            ]);
+
+            return response()->json([
+                "status" => true,
+                "message" => "Data berhasil dirubah",
+                "data" => $customer
+            ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                "status" => false,
+                "message" => "Terjadi kesalahan: " . $e->getMessage()
+            ], 500);
+        }
+
     }
 
     /**
@@ -125,21 +209,21 @@ class StoreController extends Controller
     public function destroy(string $id)
     {
         $cek_data = Customer_store::find($id);
-        if(!$cek_data){
+        if (!$cek_data) {
             return response()->json([
                 "status" => false,
                 "message" => "Data gagal di delete, pastikan id sesuai",
                 "data" => $id
             ], 400);
         }
-        
+
         DB::beginTransaction();
         try {
             $delete = $cek_data->delete();
 
             DB::commit();
 
-            if($delete){
+            if ($delete) {
                 return response()->json([
                     "status" => true,
                     "message" => "Data berhasil di delete",

@@ -11,6 +11,9 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/customer', [StoreController::class, 'index']);
 Route::post('/customer', [StoreController::class, 'store']);
+Route::get('/customer/{id}', [StoreController::class, 'show']);
+Route::patch('/customer/{id}', [StoreController::class, 'update']);
 Route::delete('/customer/{id}', [StoreController::class, 'destroy']);
 Route::post('/address', [AddressController::class, 'store']);
-Route::delete('/address/{id}', [StoreController::class, 'destroy']);
+Route::patch('/address/{id}', [AddressController::class, 'update']);
+Route::delete('/address/{id}', [AddressController::class, 'destroy']);
