@@ -14,13 +14,13 @@ class CustomerStoreTest extends TestCase
      */
     public function test_get_customer()
     {
-        $response = $this->getJson('/api/customer');
+        $response = $this->getJson('/customer');
         $response->assertStatus(200);
     }
 
     public function test_get_customer_by_id()
     {
-        $response = $this->getJson('/api/customer/4');
+        $response = $this->getJson('/customer/4');
         $response->assertStatus(200);
     }
 
@@ -35,7 +35,7 @@ class CustomerStoreTest extends TestCase
             'email' => 'adrien.philippe@gmail.com',
         ];
 
-        $response = $this->postJson('/api/customer', $data);
+        $response = $this->postJson('/customer', $data);
         $response->assertStatus(200);
 
         $id = $response->json('data.id');
@@ -53,13 +53,13 @@ class CustomerStoreTest extends TestCase
             'email' => 'adrien.philippe@gmail.com',
         ];
 
-        $response = $this->patchJson('/api/customer/4', $data);
+        $response = $this->patchJson('/customer/4', $data);
         $response->assertStatus(200);
     }
 
     public function test_delete_customer()
     {
-        $response = $this->deleteJson('/api/customer/4');
+        $response = $this->deleteJson('/customer/4');
         $response->assertStatus(200);
 
         Customer_store::onlyTrashed()->findOrFail(4)->restore();

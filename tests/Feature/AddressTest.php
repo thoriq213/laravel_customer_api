@@ -23,7 +23,7 @@ class AddressTest extends TestCase
             'postal_code' => 12345,
         ];
 
-        $response = $this->postJson('/api/address', $data);
+        $response = $this->postJson('/address', $data);
         $response->assertStatus(200);
 
         $id = $response->json('data.id');
@@ -40,13 +40,13 @@ class AddressTest extends TestCase
             'postal_code' => 54321,
         ];
 
-        $response = $this->patchJson('/api/address/3', $data);
+        $response = $this->patchJson('/address/3', $data);
         $response->assertStatus(200);
     }
 
     public function test_delete_address()
     {
-        $response = $this->deleteJson('/api/address/3');
+        $response = $this->deleteJson('/address/3');
         $response->assertStatus(200);
 
         Address_store::onlyTrashed()->findOrFail(3)->restore();
