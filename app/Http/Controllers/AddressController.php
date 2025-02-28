@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address_store;
+use App\Models\Log_error;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -70,6 +71,13 @@ class AddressController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
 
             return response()->json([
                 "status" => false,
@@ -146,6 +154,13 @@ class AddressController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
+
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -183,6 +198,13 @@ class AddressController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
 
             return response()->json([
                 "status" => false,

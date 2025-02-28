@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Address_store;
 use App\Models\Customer_store;
+use App\Models\Log_error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -33,6 +34,13 @@ class StoreController extends Controller
                 ], 404);
             }
         } catch (\Exception $e) {
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
+            
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -94,6 +102,13 @@ class StoreController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
+
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -126,6 +141,14 @@ class StoreController extends Controller
                 "data" => $get_data
             ], 200);
         } catch (\Exception $e) {
+
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
+
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -195,6 +218,13 @@ class StoreController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
+
             return response()->json([
                 "status" => false,
                 "message" => "Terjadi kesalahan: " . $e->getMessage()
@@ -232,6 +262,13 @@ class StoreController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
+
+            $data_log = [
+                'path' => request()->path(),
+                'error_msg' => json_encode($e->getMessage())
+            ];
+
+            $insert_log = Log_error::create($data_log);
 
             return response()->json([
                 "status" => false,
