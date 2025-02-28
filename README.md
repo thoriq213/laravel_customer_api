@@ -3,6 +3,7 @@
 - [Composer](https://getcomposer.org/).
 - [PHP >= 8.2](https://www.php.net/).
 - [MySql](https://www.mysql.com/).
+- [Docker (Optional)](https://www.docker.com/).
 
 ## Instalation
 - composer update
