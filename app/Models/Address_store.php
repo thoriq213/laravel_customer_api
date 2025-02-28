@@ -26,10 +26,10 @@ class Address_store extends Model
     
     public function getCreatedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y H:i:s');  // Custom format
+        return Carbon::parse($value)->timezone('Asia/Jakarta')->format('d-m-Y H:i:s');  // Custom format
     }
     public function getUpdatedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y H:i:s');  // Custom format
+        return Carbon::parse($value)->timezone('Asia/Jakarta')->format('d-m-Y H:i:s');  // Custom format
     }
 }
